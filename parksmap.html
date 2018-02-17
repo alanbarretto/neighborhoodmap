@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+
+	<script type='text/javascript' src='../knockout-3.5.0.js'></script>
+
+	<link rel="stylesheet" type="text/css" href="parksmap.css">
+	 
+	<title>Udacity Map Project</title>
+
+</head>
+<body>
+
+
+	<nav>
+		<p>Choose a National Park NOw
+	  <select data-bind="options: californiaParks"></select></p>
+	  
+	  <h4 class="text-center">Alan's California National Parks Map</h4>
+	  
+	</nav>
+
+
+
+		<div id="map"></div>
+
+
+
+	<script type="text/javascript">
+		
+
+		var map;
+		var churches;
+		var markers = [];
+		var options = {
+		center: {lat: 36.7468, lng: -119.7726},
+		zoom: 6,
+		gestrureHandling: "greedy"
+		};
+
+		
+
+		function initMap(){
+			map = new google.maps.Map(document.getElementById('map'), options)
+			console.log(map.getCenter());
+
+			
+
+			parks = [
+			{title: 'Channel Islands', location: {lat: 33.9961, lng:-119.7692}},
+			{title: 'Death Valley', location: {lat:36.5323, lng:-116.9325}},
+			{title: 'Joshua Tree', location: {lat:33.8734, lng:-115.9010}},
+			{title: 'Lassen Volcanic', location: {lat:40.4977, lng:-121.4207}},
+			{title: 'Pinnacles', location: {lat:36.4906, lng:-121.1825}},
+			{title: 'Sequoia National Park', location: {lat:36.486366, lng:-118.565750}},
+			{title: 'Redwood National Park', location: {lat:41.213181, lng:-124.004631}},
+			{title: 'Kings Canyon', location: {lat:36.887856, lng:-118.555145}},
+			{title: 'Yosemite', location: {lat:37.8651, lng:-119.538330}}
+
+
+
+		];
+
+			var largeInfowindow = new google.maps.InfoWindow();
+			var bounds = new google.maps.LatLngBounds();
+
+			for (var i=0; i<parks.length; i++){
+				var position = parks[i].location;
+				var title = parks[i].title;
+				
+
+				var marker = new google.maps.Marker({
+					map: map,
+					position: position,
+					title: title,
+					animation: google.maps.Animation.DROP,
+					id: i
+
+				});
+
+				markers.push(marker);
+
+				marker.addListener('click', function(){
+					populateInfoWindow(this, largeInfowindow);
+				});
+				bounds.extend(markers[i].position);
+
+			}
+			/*map.fitBounds(bounds);*/
+
+			};
+
+
+			function parkSearch(){
+				bounds = map.getBounds();
+
+				nationalParks = google.maps.PlacesServices()
+
+
+
+			};
+
+			function populateInfoWindow(marker, infowindow){
+				if (infowindow.marker != marker) {
+					infowindow.marker = marker;
+					infowindow.setContent('<div>' + marker.title + '</div>');
+					infowindow.open(map, marker);
+
+					
+
+					infowindow.addListener('closeclick', function(){
+						infowindow.setMarker = null;
+					});
+				}
+
+			}
+
+	var viewModel = {
+	        californiaParks: ko.observableArray(['France', 'Germany', 'Spain'])
+	    };
+
+	    ko.applyBindings(viewModel);
+			
+
+		
+
+	</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry,\
+        drawing&key=AIzaSyDno0SBfetRc2-IpoOHBshi4TcfZYY9cmM&v=3&callback=initMap">
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+</body>
+</html>
