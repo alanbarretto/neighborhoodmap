@@ -34,9 +34,9 @@
  				<ul data-bind="template: {name: 'parkList', foreach: parks}"></ul>
  				<script type="text/html" id="parkList">
  					<div data-bind="visible: makeMeVisible">
- 						<a href="#" data-bind="attr: {id: id}">
+ 						<a href="#" data-bind="attr: {id: id}, click: $parent.linkToMarker">
  							<li>
- 								<strong data-bind="text: title"></strong>
+ 								<p data-bind="text: title"></p>
  							</li>
  						</a>
  					</div>
@@ -53,37 +53,28 @@
 
 
 	<script type="text/javascript">
-		
-
-		var map;
-		var parks = [
-			{title: 'Channel Islands', location: {lat: 33.9961, lng:-119.7692}, id: 1, makeMeVisible: ko.observable(true)},
-			{title: 'Death Valley', location: {lat:36.5323, lng:-116.9325}, id: 2, makeMeVisible: ko.observable(true)},
-			{title: 'Joshua Tree', location: {lat:33.8734, lng:-115.9010}, id: 3, makeMeVisible: ko.observable(true)},
-			{title: 'Lassen Volcanic', location: {lat:40.4977, lng:-121.4207}, id: 4, makeMeVisible: ko.observable(true)},
-			{title: 'Pinnacles', location: {lat:36.4906, lng:-121.1825}, id: 5, makeMeVisible: ko.observable(true)},
-			{title: 'Sequoia National Park', location: {lat:36.486366, lng:-118.565750}, id: 6, makeMeVisible: ko.observable(true)},
-			{title: 'Redwood National Park', location: {lat:41.213181, lng:-124.004631}, id: 7, makeMeVisible: ko.observable(true)},
-			{title: 'Kings Canyon', location: {lat:36.887856, lng:-118.555145}, id: 8, makeMeVisible: ko.observable(true)},
-			{title: 'Yosemite', location: {lat:37.8651, lng:-119.538330}, id: 9, makeMeVisible: ko.observable(true)}
 
 
 
-		];
-		var markers = [];
-		var options = {
-		center: {lat: 36.7468, lng: -119.7726},
-		zoom: 6,
-		gestrureHandling: "greedy",
-		mapTypeControl: true,
-		disableDefaultUI: false
+
+		function viewModel(){
+
+			var self = this;
+
+			var map;
+			var markers = [];
+			var options = {
+			center: {lat: 36.7468, lng: -119.7726},
+			zoom: 6,
+			gestrureHandling: "greedy",
+			mapTypeControl: true,
+			disableDefaultUI: false
 		};
-
-		
 
 		function initMap(){
 			map = new google.maps.Map(document.getElementById('map'), options)
-			
+			var parks = new viewModel().parks;
+			alert(parks);
 
 
 			var largeInfowindow = new google.maps.InfoWindow();
@@ -108,10 +99,38 @@
 				marker.addListener('click', function(){
 					populateInfoWindow(this, largeInfowindow);
 				});
-				
 
+				
+		    	}
 			}
-		}
+
+		
+		self.parks = ko.observableArray([
+			{title: 'Redwood National Park', location: {lat:41.213181, lng:-124.004631}, id: 1, makeMeVisible: ko.observable(true)},
+			{title: 'Lassen Volcanic', location: {lat:40.4977, lng:-121.4207}, id: 2, makeMeVisible: ko.observable(true)},
+			{title: 'Yosemite', location: {lat:37.8651, lng:-119.538330}, id: 3, makeMeVisible: ko.observable(true)},
+			{title: 'Kings Canyon', location: {lat:36.887856, lng:-118.555145}, id: 4, makeMeVisible: ko.observable(true)},
+			{title: 'Sequoia National Park', location: {lat:36.486366, lng:-118.565750}, id: 5, makeMeVisible: ko.observable(true)},
+			{title: 'Pinnacles', location: {lat:36.4906, lng:-121.1825}, id: 6, makeMeVisible: ko.observable(true)},
+			{title: 'Death Valley', location: {lat:36.5323, lng:-116.9325}, id: 7, makeMeVisible: ko.observable(true)},
+			{title: 'Channel Islands', location: {lat: 33.9961, lng:-119.7692}, id: 8, makeMeVisible: ko.observable(true)},
+			{title: 'Joshua Tree', location: {lat:33.8734, lng:-115.9010}, id: 9, makeMeVisible: ko.observable(true)}
+
+		]);
+		
+
+
+		self.availableParks = ko.observableArray(['Redwood National Park', 'Lassen Volcanic', 'Yosemite', 'Kings Canyon', 'Sequoia National Park', 'Pinnacles', 'Death Valley', 'Channel Islands', 'Joshua Tree']),
+
+		self.selection = ko.observable(),
+
+		self.linkToMarker = function(x){
+						alert((x.id))
+					}
+
+		};
+
+		
 
 
 		function populateInfoWindow(marker, infowindow) {
@@ -155,33 +174,17 @@
 	          // Open the infowindow on the correct marker.
 	          infowindow.open(map, marker);
 	        }
-      }
+      	}
 
 
-var Park = function(title, location) {
-        this.parkName = title;
-        this.parkLocation = location;
-    };
- 
-var viewModel = {
-
-
-	availableParks: ko.observableArray(['Yosemite', 'Pinnacles', 'Sequoia', 'Death Valley', 'Redwood', 'Channel Islands', 'Joshua Tree', "King's Canyon", "Lassen Volcanic"]),
-
-	selection : ko.observable()
-
-
-
-	};
-
-ko.applyBindings(viewModel)
+ko.applyBindings(new viewModel())
 			
 
 
 	</script>
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry,\
-        drawing&key=AIzaSyDno0SBfetRc2-IpoOHBshi4TcfZYY9cmM&v=3&callback=initMap">
+        drawing&key=AIzaSyDno0SBfetRc2-IpoOHBshi4TcfZYY9cmM&v=3&callback=viewModel.initMap">
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
