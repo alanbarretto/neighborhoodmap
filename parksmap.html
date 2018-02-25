@@ -19,7 +19,8 @@
 
 	<nav>
 		<p>Choose a National Park
-	  <select data-bind="options: availableParks,
+	  <select data-bind="options: parks,
+	  					optionsValue: 'title',
 	  					value: selection,
                        optionsCaption: 'Choose...'"></select>
 </p>
@@ -54,137 +55,164 @@
 
 	<script type="text/javascript">
 
+	var map;
+	var markers = [];
+	var options = {
+		center: {lat: 36.7468, lng: -119.7726},
+		zoom: 6,
+		gestrureHandling: "greedy",
+		mapTypeControl: true,
+		disableDefaultUI: false
+	};
+
+	var parks = [
+		{title: 'Redwood National Park', location: {lat:41.213181, lng:-124.004631}, makeMeVisible: ko.observable(true), id: 1},
+		{title: 'Lassen Volcanic', location: {lat:40.4977, lng:-121.4207}, makeMeVisible: ko.observable(true),  id: 2},
+		{title: 'Yosemite', location: {lat:37.8651, lng:-119.538330}, makeMeVisible: ko.observable(true), id: 3},
+		{title: 'Kings Canyon', location: {lat:36.887856, lng:-118.555145}, makeMeVisible: ko.observable(true), id: 4},
+		{title: 'Sequoia National Park', location: {lat:36.486366, lng:-118.565750}, makeMeVisible: ko.observable(true), id: 5},
+		{title: 'Pinnacles', location: {lat:36.4906, lng:-121.1825},  makeMeVisible: ko.observable(true), id: 6},
+		{title: 'Death Valley', location: {lat:36.5323, lng:-116.9325},  makeMeVisible: ko.observable(true), id: 7},
+		{title: 'Channel Islands', location: {lat: 33.9961, lng:-119.7692},  makeMeVisible: ko.observable(true), id: 8},
+		{title: 'Joshua Tree', location: {lat:33.8734, lng:-115.9010},  makeMeVisible: ko.observable(true), id: 9}
+		];
 
 
+	function initMap(){
 
-		function viewModel(){
-
-			var self = this;
-
-			var map;
-			var markers = [];
-			var options = {
-			center: {lat: 36.7468, lng: -119.7726},
-			zoom: 6,
-			gestrureHandling: "greedy",
-			mapTypeControl: true,
-			disableDefaultUI: false
-		};
-
-		function initMap(){
-			map = new google.maps.Map(document.getElementById('map'), options)
-			var parks = new viewModel().parks;
-			alert(parks);
+		map = new google.maps.Map(document.getElementById('map'), options)
 
 
-			var largeInfowindow = new google.maps.InfoWindow();
-			var bounds = new google.maps.LatLngBounds();
+		var largeInfowindow = new google.maps.InfoWindow();
+		var bounds = new google.maps.LatLngBounds();
 
-			for (var i=0; i<parks.length; i++){
-				var position = parks[i].location;
-				var title = parks[i].title;
-				
+		vm.nationalParks().forEach(function(park){
+			var marker = new google.maps.Marker({
+				map: map,
+				position: park.location,
+				title: park.title,
+				animation: google.maps.Animation.DROP,
+				id: park.id
 
-				var marker = new google.maps.Marker({
-					map: map,
-					position: position,
-					title: title,
-					animation: google.maps.Animation.DROP,
-					id: i
+			});
 
-				});
+			park.marker = marker;
+			
 
-				markers.push(marker);
+			markers.push(marker);
+			
 
-				marker.addListener('click', function(){
-					populateInfoWindow(this, largeInfowindow);
-				});
+			bounds.extend(marker.position);
 
-				
-		    	}
-			}
+			marker.addListener('click', function(){
+				populateInfoWindow(this, largeInfowindow);
+				marker.setAnimation(google.maps.Animation.BOUNCE);
+				setTimeout(function(){marker.setAnimation(null);}, 2300);
+
+			});
+
+			
+	    	});
+		}
+
+	function populateInfoWindow(marker, infowindow) {
+        // Check to make sure the infowindow is not already opened on this marker.
+        if (infowindow.marker != marker) {
+          // Clear the infowindow content to give the streetview time to load.
+          infowindow.setContent('');
+          infowindow.marker = marker;
+          // Make sure the marker property is cleared if the infowindow is closed.
+          infowindow.addListener('closeclick', function() {
+            infowindow.marker = null;
+          });
+          var streetViewService = new google.maps.StreetViewService();
+          var radius = 100;
+          // In case the status is OK, which means the pano was found, compute the
+          // position of the streetview image, then calculate the heading, then get a
+          // panorama from that and set the options
+          function getStreetView(data, status) {
+            if (status == google.maps.StreetViewStatus.OK) {
+              var nearStreetViewLocation = data.location.latLng;
+              var heading = google.maps.geometry.spherical.computeHeading(
+                nearStreetViewLocation, marker.position);
+                infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
+                var panoramaOptions = {
+                  position: nearStreetViewLocation,
+                  pov: {
+                    heading: heading,
+                    pitch: 30
+                  }
+                };
+              var panorama = new google.maps.StreetViewPanorama(
+                document.getElementById("pano"), panoramaOptions);
+            } else {
+              infowindow.setContent('<div>' + marker.title + '</div>' +
+                '<div>No Street View Found</div>');
+            }
+          }
+          // Use streetview service to get the closest streetview image within
+          // 50 meters of the markers position
+          streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
+          // Open the infowindow on the correct marker.
+          infowindow.open(map, marker);
+        }
+  	}
+    
+    var Parks = function(data){
+    	this.title = data.title;
+    	this.location = data.location;
+    	this.makeMeVisible = data.makeMeVisible;
+    	this.id = data.id;
+
+    }
+
+    //var parkTitles = ['Redwood National Park', 'Lassen Volcanic', 'Yosemite', 'Kings Canyon', 'Sequoia National Park', 'Pinnacles', 'Death Valley', 'Channel Islands', 'Joshua Tree']; 
+
+
+	function ViewModel(){
 
 		
-		self.parks = ko.observableArray([
-			{title: 'Redwood National Park', location: {lat:41.213181, lng:-124.004631}, id: 1, makeMeVisible: ko.observable(true)},
-			{title: 'Lassen Volcanic', location: {lat:40.4977, lng:-121.4207}, id: 2, makeMeVisible: ko.observable(true)},
-			{title: 'Yosemite', location: {lat:37.8651, lng:-119.538330}, id: 3, makeMeVisible: ko.observable(true)},
-			{title: 'Kings Canyon', location: {lat:36.887856, lng:-118.555145}, id: 4, makeMeVisible: ko.observable(true)},
-			{title: 'Sequoia National Park', location: {lat:36.486366, lng:-118.565750}, id: 5, makeMeVisible: ko.observable(true)},
-			{title: 'Pinnacles', location: {lat:36.4906, lng:-121.1825}, id: 6, makeMeVisible: ko.observable(true)},
-			{title: 'Death Valley', location: {lat:36.5323, lng:-116.9325}, id: 7, makeMeVisible: ko.observable(true)},
-			{title: 'Channel Islands', location: {lat: 33.9961, lng:-119.7692}, id: 8, makeMeVisible: ko.observable(true)},
-			{title: 'Joshua Tree', location: {lat:33.8734, lng:-115.9010}, id: 9, makeMeVisible: ko.observable(true)}
+		var self = this;
 
-		]);
-		
+		//self.parkNames = ko.observableArray([]);
+
+		//parkTitles.forEach(function(data){
+		//	self.parkNames.push(data)
+		//});
 
 
-		self.availableParks = ko.observableArray(['Redwood National Park', 'Lassen Volcanic', 'Yosemite', 'Kings Canyon', 'Sequoia National Park', 'Pinnacles', 'Death Valley', 'Channel Islands', 'Joshua Tree']),
+		self.selection = ko.observable();
 
-		self.selection = ko.observable(),
+		self.nationalParks = ko.observableArray([]);
 
-		self.linkToMarker = function(x){
-						alert((x.id))
-					}
+		parks.forEach(function(data){
+			self.nationalParks.push(new Parks(data));
+		});
 
-		};
-
-		
+		self.linkToMarker = function(park_obj){
 
 
-		function populateInfoWindow(marker, infowindow) {
-	        // Check to make sure the infowindow is not already opened on this marker.
-	        if (infowindow.marker != marker) {
-	          // Clear the infowindow content to give the streetview time to load.
-	          infowindow.setContent('');
-	          infowindow.marker = marker;
-	          // Make sure the marker property is cleared if the infowindow is closed.
-	          infowindow.addListener('closeclick', function() {
-	            infowindow.marker = null;
-	          });
-	          var streetViewService = new google.maps.StreetViewService();
-	          var radius = 100;
-	          // In case the status is OK, which means the pano was found, compute the
-	          // position of the streetview image, then calculate the heading, then get a
-	          // panorama from that and set the options
-	          function getStreetView(data, status) {
-	            if (status == google.maps.StreetViewStatus.OK) {
-	              var nearStreetViewLocation = data.location.latLng;
-	              var heading = google.maps.geometry.spherical.computeHeading(
-	                nearStreetViewLocation, marker.position);
-	                infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
-	                var panoramaOptions = {
-	                  position: nearStreetViewLocation,
-	                  pov: {
-	                    heading: heading,
-	                    pitch: 30
-	                  }
-	                };
-	              var panorama = new google.maps.StreetViewPanorama(
-	                document.getElementById("pano"), panoramaOptions);
-	            } else {
-	              infowindow.setContent('<div>' + marker.title + '</div>' +
-	                '<div>No Street View Found</div>');
-	            }
-	          }
-	          // Use streetview service to get the closest streetview image within
-	          // 50 meters of the markers position
-	          streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
-	          // Open the infowindow on the correct marker.
-	          infowindow.open(map, marker);
-	        }
-      	}
+			var parkMarker = markers[park_obj.id-1];
 
+			google.maps.event.trigger(parkMarker, 'click');
 
-ko.applyBindings(new viewModel())
+			//alert(parkMarker.position)
+
+			//parkMarker.setAnimation(google.maps.Animation.BOUNCE);
+				//setTimeout(function(){parkMarker.setAnimation(null);}, 2300);
+		}
+
+		  };
+
+var vm = new ViewModel();
+ko.applyBindings(vm);
 			
 
 
 	</script>
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry,\
-        drawing&key=AIzaSyDno0SBfetRc2-IpoOHBshi4TcfZYY9cmM&v=3&callback=viewModel.initMap">
+        drawing&key=AIzaSyDno0SBfetRc2-IpoOHBshi4TcfZYY9cmM&v=3&callback=initMap">
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
