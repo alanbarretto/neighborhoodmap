@@ -34,12 +34,12 @@
  				<ul class="parkNav" data-bind="template: {name: 'parkList', foreach: parks}"></ul>
  				<script type="text/html" id="parkList">
  					<div>
- 						<a href="#" data-bind="click: $parent.linkToMarker">
- 							<li>
- 								<h6 data-bind="text: title"></h6>
- 								<p>Weather there today is <span data-bind="attr: {id: id}, text: "></p>
- 							</li>
- 						</a>
+ 						
+						<li>
+							<h6 data-bind="text: title, click: $parent.linkToMarker"></h6>
+							<p data-bind="click: $parent.weatherType">Weather there today is <span data-bind="attr: {id: id}, text: "></p>
+						</li>
+ 						
  					</div>
  				</script>
 
@@ -216,8 +216,9 @@
 
 			$.getJSON(api, function(data){
 				var weatherType = data.weather[0].description;
+				alert(weatherType);
 			});
-			alert(api);
+			
 		}
 		
 
