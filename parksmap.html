@@ -37,7 +37,7 @@
  						
 						<li>
 							<h6 data-bind="text: title, click: $parent.linkToMarker"></h6>
-							<p data-bind="click: $parent.weatherType">Weather there today is <span data-bind="attr: {id: id}, text: "></p>
+							<p id="test">Weather there today is <span id="output"></p>
 						</li>
  						
  					</div>
@@ -161,7 +161,7 @@
     var Parks = function(data){
     	this.title = data.title;
     	this.location = data.location;
-    	this.makeMeVisible = data.makeMeVisible;
+    	this.weather = data.weather;
     	this.id = data.id;
 
     }
@@ -174,14 +174,14 @@
 		
 		var self = this;
 
-		//self.parkNames = ko.observableArray([]);
-
-		//parkTitles.forEach(function(data){
-		//	self.parkNames.push(data)
-		//});
-
-
 		self.selection = ko.observable();
+
+		self.nationalParks = ko.observableArray([]);
+
+		parks.forEach(function(data){
+			self.nationalParks.push(new Parks(data));
+		});
+
 
 		self.selection.subscribe(function(newValue){
 			for (var i=0; i<parks.length;i++){
@@ -194,12 +194,6 @@
 			
 		})
 
-		self.nationalParks = ko.observableArray([]);
-
-		parks.forEach(function(data){
-			self.nationalParks.push(new Parks(data));
-		});
-
 		self.linkToMarker = function(park_obj){
 
 			var parkMarker = markers[park_obj.id-1];
@@ -208,21 +202,28 @@
 
 		};
 
-
+		
 		self.weatherType = function(park_obj){
-			var lat = park_obj.location.lat;
-			var lng = park_obj.location.lng;
-			var api = "http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lng+"&appid=b31239a2b00ba340ebc36a016b921d9b"
 
-			$.getJSON(api, function(data){
-				var weatherType = data.weather[0].description;
-				alert(weatherType);
-			});
 			
-		}
+				var lat = park_obj.location.lat;
+				var lng = park_obj.location.lng;
+				var api = "http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lng+"&appid=b31239a2b00ba340ebc36a016b921d9b"
+
+				$.getJSON(api, function(data){
+					var weatherType = data.weather[0].description;
+					alert(weatherType);
+				});
+			}
+
 		
 
 		  };
+	$(function(){
+		$("#test").click(function(){
+			$("#output").text("hello");
+		})
+	})
 
 
 
