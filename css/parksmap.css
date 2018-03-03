@@ -12,34 +12,71 @@ html, body {
     margin:0
       }
 
+nav {
+    min-height: 50px;
+}
+nav p {
+    margin-top: 10px;
+}
+
 #side-container{
     opacity: .9;
+    margin-top: 50px;
     position: absolute;
     z-index: 3;
 }
 
 #side-nav {
     width: 300px;
-    min-height: 800px;
-    max-height: 800px;
+    min-height: 350px;
+    max-height: 350px;
     overflow: hidden;
     background-color: #eee;
 }
 
 #side-navbar{
-    min-height: 500px;
-    max-height: 500px;
+    min-height: 340px;
+    max-height: 340px;
     overflow: scroll;
     margin: 5px;
+    border: 2px solid black;
 }
 
-/*#options-box {
-        background: #fff;
-        border: 1px solid #999;
-        border-radius: 3px;
-        height: 100%;
-        line-height: 35px;
-        padding: 10px 10px 30px 10px;
-        text-align: left;
-        /*width: 340px;
-}*/
+#pano {
+    height: 250px;
+    width: 250px;
+}
+
+.parkNav {
+    list-style: none;
+}
+
+li {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.parkTitle:hover {
+    background-color: grey;
+}
+
+#weatherNow {
+    color: red;
+    font-size: 1.1em;
+}
+
+#intro {
+    margin: 10px;
+    
+}
+
+#banner {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+#title {
+    margin: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+}
