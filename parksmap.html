@@ -17,7 +17,7 @@
 <body>
 
 
-	<nav>
+	<nav class="nav">
 		<p>Choose a National Park
 			<select data-bind="options: parks,
 						optionsValue: function(item){return item.title},
@@ -36,8 +36,8 @@
  					<div>
  						
 						<li>
-							<h6 data-bind="text: title, click: $parent.linkToMarker"></h6>
-							<p id="test">Weather there today is <span id="output"></p>
+							<a href="#"><h6 data-bind="text: title, click: $parent.linkToMarker"></h6></a>
+							
 						</li>
  						
  					</div>
@@ -53,6 +53,12 @@
 
 
 
+	
+	<script
+	  src="https://code.jquery.com/jquery-3.3.1.min.js"
+	  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	  crossorigin="anonymous"></script>
+	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	<script type="text/javascript">
 
 	var map;
@@ -108,7 +114,13 @@
 				populateInfoWindow(this, largeInfowindow);
 				marker.setAnimation(google.maps.Animation.BOUNCE);
 				setTimeout(function(){marker.setAnimation(null);}, 2300);
+				var api = parks[this.id-1].weather;
+				
+  				$.getJSON(api, function(data){
+  					var description = data.weather[0].description;
+  					$('#weatherNow').text(description);
 
+				});
 			});
 
 			
@@ -130,12 +142,13 @@
           // In case the status is OK, which means the pano was found, compute the
           // position of the streetview image, then calculate the heading, then get a
           // panorama from that and set the options
+
           function getStreetView(data, status) {
             if (status == google.maps.StreetViewStatus.OK) {
               var nearStreetViewLocation = data.location.latLng;
               var heading = google.maps.geometry.spherical.computeHeading(
                 nearStreetViewLocation, marker.position);
-                infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
+                infowindow.setContent('<div id="title">' + marker.title + '</div><div id="pano"></div><div id="intro"><span id="banner">Weather today is: </span><span id="weatherNow"></span> </div>');
                 var panoramaOptions = {
                   position: nearStreetViewLocation,
                   pov: {
@@ -145,6 +158,7 @@
                 };
               var panorama = new google.maps.StreetViewPanorama(
                 document.getElementById("pano"), panoramaOptions);
+              map.setCenter(data.location.latLng);
             } else {
               infowindow.setContent('<div>' + marker.title + '</div>' +
                 '<div>No Street View Found</div>');
@@ -156,7 +170,12 @@
           // Open the infowindow on the correct marker.
           infowindow.open(map, marker);
         }
-  	}
+  	};
+
+  	
+
+
+  
     
     var Parks = function(data){
     	this.title = data.title;
@@ -196,50 +215,35 @@
 
 		self.linkToMarker = function(park_obj){
 
-			var parkMarker = markers[park_obj.id-1];
+				var parkMarker = markers[park_obj.id-1];
 
-			google.maps.event.trigger(parkMarker, 'click');
+				google.maps.event.trigger(parkMarker, 'click');
+
+				
 
 		};
-
-		
-		self.weatherType = function(park_obj){
-
-			
-				var lat = park_obj.location.lat;
-				var lng = park_obj.location.lng;
-				var api = "http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lng+"&appid=b31239a2b00ba340ebc36a016b921d9b"
-
-				$.getJSON(api, function(data){
-					var weatherType = data.weather[0].description;
-					alert(weatherType);
-				});
-			}
-
 		
 
-		  };
-	$(function(){
-		$("#test").click(function(){
-			$("#output").text("hello");
-		})
-	})
+	};
 
 
+	
 
-var vm = new ViewModel();
-ko.applyBindings(vm);
+
+	var vm = new ViewModel;
+	ko.applyBindings(vm);
 			
 
 
 	</script>
-<script async defer
+	<script async defer
         src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry,\
         drawing&key=AIzaSyDno0SBfetRc2-IpoOHBshi4TcfZYY9cmM&v=3&callback=initMap">
     </script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+	
+	
+	
     
 </body>
 </html>
