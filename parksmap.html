@@ -16,40 +16,48 @@
 </head>
 <body>
 
+	<div class="container-fluid">
+		<nav class="navbar">
+			<div class="col-md-6">
+				<p>Choose a National Park
+					<select data-bind="options: parks,
+								optionsValue: function(item){return item.title},
+								value: selection,
+								optionsCaption: 'Choose...'"></select>
+				</p>
+		    </div>
+		    <div class="col-md-6">
+		
+				<h4>California National Parks</h4>
+			</div>
 
-	<nav class="nav">
-		<p>Choose a National Park
-			<select data-bind="options: parks,
-						optionsValue: function(item){return item.title},
-						value: selection,
-						optionsCaption: 'Choose...'"></select>
-		</p>
- 	</nav>
+	 	</nav>
 
 
- 	<div id="map"></div>
- 	<div id="side-container">
- 		<div id="side-nav">
- 			<div id="side-navbar">
- 				<ul class="parkNav" data-bind="template: {name: 'parkList', foreach: parks}"></ul>
- 				<script type="text/html" id="parkList">
- 					<div>
- 						
-						<li>
-							<a href="#"><h6 data-bind="text: title, click: $parent.linkToMarker"></h6></a>
-							
-						</li>
- 						
- 					</div>
- 				</script>
+	 	
+	 	<div id="side-container">
+	 		<div id="side-nav">
+	 			<div id="side-navbar">
+	 				<ul class="parkNav" data-bind="template: {name: 'parkList', foreach: parks}"></ul>
+	 				<script type="text/html" id="parkList">
+	 					<div>
+	 						
+							<li>
+								<a href="#"><h6 data-bind="text: title, click: $parent.linkToMarker"></h6></a>
+								
+							</li>
+	 						
+	 					</div>
+	 				</script>
 
- 				<!--end of side bar -->
- 			</div>
- 		<!--end of sideMenuNav -->
- 		</div>
- 	<!--end of side menu container-->
- 	</div>
-
+	 				<!--end of side bar -->
+	 			</div>
+	 		<!--end of sideMenuNav -->
+	 		</div>
+	 	<!--end of side menu container-->
+	 	</div>
+	 	<div id="map" class="map-window col-md-12"></div>
+	 </div>
 
 
 
@@ -226,8 +234,18 @@
 
 	};
 
+	function adjustMap(x){
+		if (x.matches){
+			map.setOptions({
+            center: {lat: 36.7468, lng: -119.7726},
+            zoom: 5
+            })
+		}
+	}
 
-	
+	var x = window.matchMedia("(max-width: 300px)");
+	adjustMap(x);
+	x.addListener(adjustMap);
 
 
 	var vm = new ViewModel;
