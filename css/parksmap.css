@@ -1,0 +1,97 @@
+html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+
+
+    #map {
+    width:100vw;
+    height:100vh;
+    z-index:1;
+    margin:0
+      }
+
+    .map-window {
+        height: 100%;
+        width: 100%;
+    }
+
+    nav .navbar {
+        min-height: 50px;
+        
+    }
+    nav p {
+        margin-top: 10px;
+    }
+
+
+    #side-container{
+        opacity: .9;
+        margin-top: 50px;
+        position: absolute;
+        z-index: 3;
+    }
+
+    #side-nav {
+        width: 300px;
+        min-height: 350px;
+        max-height: 350px;
+        overflow: hidden;
+        background-color: #eee;
+    }
+
+    #side-navbar{
+        min-height: 340px;
+        max-height: 340px;
+        overflow: scroll;
+        margin: 5px;
+        border: 2px solid black;
+    }
+
+    #pano {
+        height: 250px;
+        width: 250px;
+    }
+
+    .parkNav {
+        list-style: none;
+    }
+
+    li {
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+
+
+    #weatherNow {
+        color: red;
+        font-size: 1.1em;
+    }
+
+    #intro {
+        margin: 10px;
+        
+    }
+
+    #banner {
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+    #title {
+        margin: 10px;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+@media (max-width: 576px) {
+    #side-container, h4 {
+        display: none;
+    }
+
+}
+</script>
+
