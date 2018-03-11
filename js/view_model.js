@@ -28,15 +28,26 @@
 		//when a selection is clicked from the dropdown menu, this function
 		//will trigger the marker associated with it as if the marker was clicked
 		self.selection.subscribe(function(newValue){
+			self.setVisibility(null);
 			for (var i=0; i<parks.length;i++){
 				if (parks[i].title == newValue){
 					var parkMarker = self.markers()[parks[i].id-1];
+					parkMarker.setMap(map);
 
 					google.maps.event.trigger(parkMarker, 'click');
+
+					
 				}
 			}
 			
-		})
+		});
+
+		// Sets the map on all markers in the array.
+       self.setVisibility = function(setting) {
+        for (var i = 0; i < self.markers().length; i++) {
+          self.markers()[i].setMap(setting);
+        }
+      };
 		//when a park name is clicked from the list on the left of the page, 
 		//this funcion will trigger the associated marker as if it were clicked
 		self.linkToMarker = function(park_obj){
