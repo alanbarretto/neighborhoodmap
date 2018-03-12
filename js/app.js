@@ -22,7 +22,7 @@ function initMap(){
 			});
 
       //push each marker into the markers array
-      vm.markers.push(marker);
+      vm.markers().push(marker);
       
 			park.marker = marker;
 
@@ -33,7 +33,7 @@ function initMap(){
       //using populateInfoWindow
 			marker.addListener('click', function(){
 				populateInfoWindow(this, largeInfowindow);
-				marker.setAnimation(google.maps.Animation.BOUNCE);
+				this.setAnimation(google.maps.Animation.BOUNCE);
 				setTimeout(function(){marker.setAnimation(null);}, 2300);
 				var api = parks[this.id-1].weather;
 				//gets the weather description from openweathermap api
@@ -44,10 +44,15 @@ function initMap(){
 				});
 			});
 		});
-			var bounds2 = ({lat:32.271456, lng:-125.203577}, {lat:41.920370, lng:-113.098431});
+			var bounds2 = [(32.271456, -125.203577), (41.920370, -113.098431)];
+      
       //resizes the map as the window size changes
 			google.maps.event.addDomListener(window, 'resize', function(){
 					map.setCenter({lat: 36.7468, lng: -119.7726});
+          //var bounds3 = map.getBounds();
+          //alert(bounds3);
+          
+
 					map.fitBounds(bounds2);
 			});
 
