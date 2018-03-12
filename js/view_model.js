@@ -22,27 +22,35 @@
 
 		//push each parks object into the nationalParks observable array
 		parks.forEach(function(data){
-			self.nationalParks.push(new Parks(data));
+			self.nationalParks().push(new Parks(data));
 		});
 
 		//when a selection is clicked from the dropdown menu, this function
 		//will trigger the marker associated with it as if the marker was clicked
 		self.selection.subscribe(function(newValue){
 			self.setVisibility(null);
+			self.hideList();
 			for (var i=0; i<parks.length;i++){
 				if (parks[i].title == newValue){
+					
 					var parkMarker = self.markers()[parks[i].id-1];
+
 					parkMarker.setMap(map);
 
 					google.maps.event.trigger(parkMarker, 'click');
 
+					self.showParkName(parks[i].id);
+
+
+
 					
 				}
-			}
+			};
+
 			
 		});
 
-		// Sets the map on all markers in the array.
+		// Sets the map on all markers in the array. 
        self.setVisibility = function(setting) {
         for (var i = 0; i < self.markers().length; i++) {
           self.markers()[i].setMap(setting);
@@ -60,7 +68,13 @@
 				
 
 		};
-		
+		self.hideList = function(){
+			$('.parkNav').hide()
+		};
+		self.showParkName = function(id){
+			$('#'+id).show()
+		}
+
 
 	};
 
