@@ -60,10 +60,14 @@
 		//this funcion will trigger the associated marker as if it were clicked
 		self.linkToMarker = function(park_obj){
 
+			self.setVisibility(null);
 
-				var parkMarker = self.markers()[park_obj.id-1];
 
-				google.maps.event.trigger(parkMarker, 'click');
+			var parkMarker = self.markers()[park_obj.id-1];
+
+			google.maps.event.trigger(parkMarker, 'click');
+
+			parkMarker.setMap(map);
 
 				
 
@@ -71,6 +75,16 @@
 		self.hideList = function(){
 			$('.parkNav').hide()
 		};
+
+		self.resetList = function(){
+			$('.parkNav').show();
+
+			for (var i = 0; i < self.markers().length; i++) {
+          		self.markers()[i].setMap(map);
+			};
+
+
+	};
 		self.showParkName = function(id){
 			$('#'+id).show()
 		}
