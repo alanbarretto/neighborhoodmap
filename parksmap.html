@@ -16,13 +16,14 @@
 
 	<div class="container-fluid">
 		<nav class="navbar">
-			<div class="col-md-6">
+			<div class="col-md-6 dropdown">
 				<p>Choose a National Park
 					<select data-bind="options: parks,
 								optionsValue: function(item){return item.title},
 								value: selection,
 								optionsCaption: 'Choose...'"></select>
 				</p>
+				<a href="#"><button type="button" class="btn btn-secondary" data-bind="click: resetList">Reset List</button></a>
 		    </div>
 		    <div class="col-md-6">
 		
@@ -33,13 +34,12 @@
 
 
 	 	
-	 	<div id="side-container">
-	 		<div id="side-nav">
+	 	<div class="side-container">
+ 			<div class="side-nav">
 	 			<div id="side-navbar">
 	 				<ul class="parkNav" data-bind="template: {name: 'parkList', foreach: parks}"></ul>
 	 				<script type="text/html" id="parkList">
-	 					<div>
-	 						
+	 					<div data-bind="visible: showMe">
 							<li>
 								<a href="#"><h6 data-bind="text: title, click: $parent.linkToMarker, attr: {id: id}"></h6></a>
 							</li>
@@ -47,11 +47,11 @@
 	 					</div>
 	 				</script>
 
-	 				<!--end of side bar -->
+	 				<!--end of side-navbar -->
 	 			</div>
-	 		<!--end of sideMenuNav -->
-	 		</div>
-	 	<!--end of side menu container-->
+		 		<!--end of side-nav -->
+		 		</div>
+	 	<!--end of side container-->
 	 	</div>
 	 	<div id="map" class="map-window col-md-12"></div>
 	 </div>
