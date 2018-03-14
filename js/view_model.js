@@ -29,7 +29,7 @@
 		//will trigger the marker associated with it as if the marker was clicked
 		self.selection.subscribe(function(newValue){
 			self.setVisibility(null);
-			self.hideList();
+			//self.hideList();
 			for (var i=0; i<parks.length;i++){
 				if (parks[i].title == newValue){
 					
@@ -39,13 +39,19 @@
 
 					google.maps.event.trigger(parkMarker, 'click');
 
-					self.showParkName(parks[i].id);
-
-
-
 					
-				}
+				};
 			};
+			ko.utils.arrayFilter(self.nationalParks(), function(park){
+				if (park.title === newValue){
+					//alert(park.title);
+					park.showMe(true);
+				} else {
+					//alert(park.id);
+					park.showMe(false);
+				}
+			});
+			
 
 			
 		});
@@ -73,7 +79,7 @@
 
 		};
 		self.hideList = function(){
-			$('.parkNav').hide()
+			$('.side-nav').hide()
 		};
 
 		self.resetList = function(){
@@ -85,9 +91,7 @@
 
 
 	};
-		self.showParkName = function(id){
-			$('#'+id).show()
-		}
+		
 
 
 	};
