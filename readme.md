@@ -1,4 +1,4 @@
-# Udacity Full Stack Nanodegree Project 5: Neighborhood Map
+# Udacity Full Stack Nanodegree Project: Neighborhood Map
 
 The Neighborhood Map is a Front End project from Udacity's Full-Stack Developer's Course using javascript and knockout framework. The objective is to create an app using google's map api and any other third party api.  (openweathermap api was chosen here). The map is about a place or neighborhood you would like to visit, and has points of interests featured.
 
@@ -16,6 +16,12 @@ Once the page loads, you will find a dropdown menu on the top left and a list of
 The marker associated with it will bounce, and an infowindow will appear with details of the Park.
 
 You can also click on the marker itself and the infowindow will appear just the same.
+
+Choosing a National Park from the dropdown menu will filter the park names from the list below, as well as filter the markers.  
+
+Clicking the reset button will reset the map and bring back all the markers and park names on the list.
+
+
 
 
 
