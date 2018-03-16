@@ -3,7 +3,8 @@
     	this.title = data.title;
     	this.location = data.location;
     	this.weather = data.weather;
-    	this.id = data.id;
+    	this.showMe = data.showMe;
+    	this.id = data.id
 
     }
 
@@ -26,34 +27,22 @@
 		});
 
 		//when a selection is clicked from the dropdown menu, this function
-		//will trigger the marker associated with it as if the marker was clicked
+		//will trigger the marker associated with it as if the marker was clicked, hide the park names that were not selected
 		self.selection.subscribe(function(newValue){
 			self.setVisibility(null);
-			//self.hideList();
-			for (var i=0; i<parks.length;i++){
-				if (parks[i].title == newValue){
-					
-					var parkMarker = self.markers()[parks[i].id-1];
-
-					parkMarker.setMap(map);
-
-					google.maps.event.trigger(parkMarker, 'click');
-
-					
-				};
-			};
+			
 			ko.utils.arrayFilter(self.nationalParks(), function(park){
 				if (park.title === newValue){
-					//alert(park.title);
 					park.showMe(true);
+					var parkMarker = self.markers()[park.id-1];
+					parkMarker.setMap(map);
+					google.maps.event.trigger(parkMarker, 'click');
+					
 				} else {
-					//alert(park.id);
+					//hides all park names that were not selected
 					park.showMe(false);
 				}
 			});
-			
-
-			
 		});
 
 		// Sets the map on all markers in the array. 
@@ -65,12 +54,12 @@
 		//when a park name is clicked from the list on the left of the page, 
 		//this funcion will trigger the associated marker as if it were clicked
 		self.linkToMarker = function(park_obj){
-
+			//hides all markers first
 			self.setVisibility(null);
 
 
 			var parkMarker = self.markers()[park_obj.id-1];
-
+			//click the marker associated with the park name selected
 			google.maps.event.trigger(parkMarker, 'click');
 
 			parkMarker.setMap(map);
@@ -78,20 +67,19 @@
 				
 
 		};
-		self.hideList = function(){
-			$('.side-nav').hide()
-		};
 
+		//resets the list and map when you click on the reset button
 		self.resetList = function(){
-			$('.parkNav').show();
+			
+			initMap();
+			ko.utils.arrayFilter(self.nationalParks(), function(park){
 
-			for (var i = 0; i < self.markers().length; i++) {
-          		self.markers()[i].setMap(map);
-			};
+				park.showMe(true);
+
+			});
 
 
 	};
-		
 
 
 	};
