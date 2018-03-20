@@ -103,5 +103,5 @@ function populateInfoWindow(marker, infowindow) {
 }
 
 function errorHandler(){
-	alert("The page did not load. Please try again later.")
+	alert("The page did not load. Please try again later.");
 }
