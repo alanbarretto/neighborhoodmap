@@ -43,13 +43,13 @@ function initMap(){
 			});
 		});
 	});
-	var bounds2 = [(32.271456, -125.203577), (41.920370, -113.098431)];
+	map.fitBounds(bounds);
 
 	//resizes the map as the window size changes
 	google.maps.event.addDomListener(window, 'resize', function(){
 			map.setCenter({lat: 36.7468, lng: -119.7726});
 
-			map.fitBounds(bounds2);
+			map.fitBounds(bounds);
 			});
 
 	}
@@ -100,4 +100,8 @@ function populateInfoWindow(marker, infowindow) {
 		// Open the infowindow on the correct marker.
 		infowindow.open(map, marker);
 	}
+}
+
+function errorHandler(){
+	alert("The page did not load. Please try again later.")
 }
