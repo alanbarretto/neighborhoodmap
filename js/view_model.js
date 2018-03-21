@@ -35,7 +35,7 @@ function ViewModel(){
 				park.showMe(true);
 				var parkMarker = self.markers()[park.id-1];
 				parkMarker.setMap(map);
-				google.maps.event.trigger(parkMarker, 'click');
+				//google.maps.event.trigger(parkMarker, 'click');
 			} else {
 				//hides all park names that were not selected
 				park.showMe(false);
