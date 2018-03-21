@@ -101,7 +101,7 @@ function populateInfoWindow(marker, infowindow) {
 							document.getElementById("pano"), panoramaOptions);
 						
 					}).fail(function(){
-						alert("Sorry, there was an error with openweathermap")
+						alert("Sorry, there was an error with openweathermap");
 					});
 				map.setCenter(data.location.latLng);
 			} else {
