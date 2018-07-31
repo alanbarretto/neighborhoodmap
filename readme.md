@@ -7,7 +7,7 @@ The map featured here is about National Parks in California.
 ## Getting Started
 
 1. Clone this repository from https://github.com/alanbarretto/neighborhoodmap
-2. Open the readme.html file with your browser
+2. Open the index.html file with your browser
 
 ## How to Use
 
